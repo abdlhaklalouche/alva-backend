@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Controller from "./Controller";
 import { Entity, User } from "../Models";
 import { addUserSchema } from "../Validation/UserSchema";
+import bcrypt from "bcrypt";
 
 export default class UsersController extends Controller {
   all = async (request: Request, response: Response) => {
@@ -46,7 +47,7 @@ export default class UsersController extends Controller {
     user.update({
       name: request.body.name,
       email: request.body.email,
-      password: request.body.password,
+      password: bcrypt(request.body.password),
     });
 
     return this.success(response, "User has been updated successfully");
