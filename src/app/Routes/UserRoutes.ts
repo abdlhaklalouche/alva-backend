@@ -16,6 +16,6 @@ export default class UserRoutes implements IRoutes {
     this.router.get("/", this.controller.all);
     this.router.put("/", this.controller.store);
     this.router.patch("/:id", this.controller.update);
-    this.router.post("/delete/:id", this.controller.delete);
+    this.router.post("/delete", this.controller.delete);
   }
 }

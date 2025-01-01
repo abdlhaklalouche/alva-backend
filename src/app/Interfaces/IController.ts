@@ -1,14 +1,6 @@
 import { Response } from "express";
 
 export default interface IController {
-  response(
-    response: Response,
-    message: string,
-    data: any,
-    status: number,
-    statusText: string
-  ): void;
-
   success(
     response: Response,
     message?: string,
@@ -19,7 +11,7 @@ export default interface IController {
   failed(
     response: Response,
     message?: string,
-    data?: any,
+    errors?: any,
     status?: number
   ): void;
 }

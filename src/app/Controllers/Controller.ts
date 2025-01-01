@@ -2,26 +2,28 @@ import { Response } from "express";
 import IController from "../Interfaces/IController";
 
 class Controller implements IController {
-  response(
+  success(
     response: Response,
-    message: string,
-    data: any,
-    status: number,
-    statusText: string
+    message: string = "Success",
+    data: any = [],
+    status: number = 200
   ): void {
     response.status(status).json({
-      status: statusText,
       message,
       data,
     });
   }
 
-  success(response: Response, message: string = "Success", data: any): void {
-    this.response(response, message, data, 200, "success");
-  }
-
-  failed(response: Response, message: string = "Failed", data: any): void {
-    this.response(response, message, data, 400, "failed");
+  failed(
+    response: Response,
+    message: string = "Failed",
+    errors: any = [],
+    status: number = 400
+  ): void {
+    response.status(status).json({
+      message,
+      errors,
+    });
   }
 }
 
