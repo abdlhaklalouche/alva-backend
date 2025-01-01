@@ -1,11 +1,11 @@
 import express, { Router } from "express";
-import UsersController from "../Controllers/UsersController";
 import IRoutes from "../Interfaces/IRoutes";
+import EntitiesController from "../Controllers/EntitiesController";
 
-export default class UserRoutes implements IRoutes {
+export default class EntityRoutes implements IRoutes {
   public router: Router;
 
-  private controller: UsersController = new UsersController();
+  private controller: EntitiesController = new EntitiesController();
 
   constructor() {
     this.router = express.Router();

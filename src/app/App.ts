@@ -1,18 +1,18 @@
 import express, { Application } from "express";
 import * as bodyParser from "body-parser";
-import dotenv from "dotenv";
+
 import routes from "./Routes";
+import database from "./Config/Database";
 
 class App {
   public app: Application;
   public port: number;
 
   constructor(port: any) {
-    dotenv.config();
-
     this.app = express();
     this.port = process.env.PORT || port;
 
+    this.establishDbConnection();
     this.initializeMiddlewares();
     this.initializeRoutes();
   }
@@ -23,6 +23,17 @@ class App {
 
   private initializeRoutes() {
     routes(this.app);
+  }
+
+  private async establishDbConnection() {
+    try {
+      await database.authenticate();
+      await database.sync();
+
+      console.log(`Connection has been established successfully.`);
+    } catch (error) {
+      console.log(`Unable to connect to the database: ${error}`);
+    }
   }
 
   public listen() {

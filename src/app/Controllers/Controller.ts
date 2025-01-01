@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import { Response } from "express";
 import IController from "../Interfaces/IController";
 
 class Controller implements IController {
@@ -16,19 +16,11 @@ class Controller implements IController {
     });
   }
 
-  success(
-    response: Response,
-    message: string = "Success",
-    data: any[] = []
-  ): void {
+  success(response: Response, message: string = "Success", data: any): void {
     this.response(response, message, data, 200, "success");
   }
 
-  failed(
-    response: Response,
-    message: string = "Failed",
-    data: any[] = []
-  ): void {
+  failed(response: Response, message: string = "Failed", data: any): void {
     this.response(response, message, data, 400, "failed");
   }
 }
