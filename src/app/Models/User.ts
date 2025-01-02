@@ -6,6 +6,7 @@ class User extends Model {
   public id!: number;
   public name!: string;
   public email!: string;
+  public password!: string;
 }
 
 User.init(
@@ -23,6 +24,10 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
   },
   {
