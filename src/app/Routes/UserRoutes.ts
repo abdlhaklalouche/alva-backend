@@ -20,12 +20,14 @@ export default class UserRoutes implements IRoutes {
 
   //prettier-ignore
   registerRoutes(): void {
+    this.router.post("/login", this.guest.handle(), this.controller.login);
+    this.router.post("/check", this.auth.handle(), this.controller.check);
+    
+    // System Admin Actions
+
     this.router.get("/", [this.auth.handle(), this.sysAdmin.handle()], this.controller.all);
     this.router.put("/", [this.auth.handle(), this.sysAdmin.handle()], this.controller.store);
     this.router.patch("/:id", [this.auth.handle(), this.sysAdmin.handle()], this.controller.update);
     this.router.post("/delete", [this.auth.handle(), this.sysAdmin.handle()], this.controller.delete);
-    // Authentication
-    this.router.post("/login", this.guest.handle(), this.controller.login);
-    this.router.post("/check", this.auth.handle(), this.controller.check);
   }
 }

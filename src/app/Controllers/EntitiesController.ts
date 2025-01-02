@@ -16,4 +16,12 @@ export default class EntitiesController extends Controller {
   update = async (request: IRequest, response: IResponse) => {};
 
   delete = async (request: IRequest, response: IResponse) => {};
+
+  userAll = async (request: IRequest, response: IResponse) => {};
+
+  userStore = async (request: IRequest, response: IResponse) => {};
+
+  userUpdate = async (request: IRequest, response: IResponse) => {};
+
+  userDelete = async (request: IRequest, response: IResponse) => {};
 }
