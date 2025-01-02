@@ -1,13 +1,13 @@
 import express, { Router } from "express";
 import IRoutes from "../Interfaces/IRoutes";
-import DevicesController from "../Controllers/DevicesController";
 import AuthMiddleware from "../Middlewares/AuthMiddleware";
 import SysAdminMiddleware from "../Middlewares/SysAdminMiddleware";
+import RoomsController from "../Controllers/RoomsController";
 
-export default class DeviceRoutes implements IRoutes {
+export default class RoomRoutes implements IRoutes {
   public router: Router;
 
-  private controller: DevicesController = new DevicesController();
+  private controller: RoomsController = new RoomsController();
   private auth: AuthMiddleware = new AuthMiddleware();
   private sysAdmin: SysAdminMiddleware = new SysAdminMiddleware();
 
@@ -24,7 +24,6 @@ export default class DeviceRoutes implements IRoutes {
     this.router.post("/delete", this.auth.handle(), this.controller.userDelete);
 
     // System Admin Actions
-
     this.router.get("/:id", [this.auth.handle(), this.sysAdmin.handle()], this.controller.single);
     this.router.patch("/:id", [this.auth.handle(), this.sysAdmin.handle()], this.controller.update);
   }

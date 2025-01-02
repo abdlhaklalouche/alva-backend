@@ -1,19 +1,12 @@
 import IRequest from "../Interfaces/IRequest";
 import IResponse from "../Interfaces/IResponse";
-import { Request, Response } from "express";
 import Controller from "./Controller";
-import { Entity } from "../Models";
+import { Device } from "../Models";
 
-export default class EntitiesController extends Controller {
-  all = async (request: IRequest, response: IResponse) => {};
-
+export default class RoomsController extends Controller {
   single = async (request: IRequest, response: IResponse) => {};
 
-  store = async (request: IRequest, response: IResponse) => {};
-
   update = async (request: IRequest, response: IResponse) => {};
-
-  delete = async (request: IRequest, response: IResponse) => {};
 
   userAll = async (request: IRequest, response: IResponse) => {};
 

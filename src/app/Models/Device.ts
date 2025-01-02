@@ -1,7 +1,5 @@
 import { Model, DataTypes } from "sequelize";
 import database from "../Config/Database";
-import DeviceEnergy from "./DeviceEnergy";
-import Room from "./Room";
 
 class Device extends Model {
   public id!: number;

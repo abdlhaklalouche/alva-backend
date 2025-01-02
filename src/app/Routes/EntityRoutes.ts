@@ -26,6 +26,7 @@ export default class EntityRoutes implements IRoutes {
     // System Admin Actions
     
     this.router.get("/", [this.auth.handle(), this.sysAdmin.handle()], this.controller.all);
+    this.router.get("/:id", [this.auth.handle(), this.sysAdmin.handle()], this.controller.single);
     this.router.put("/", [this.auth.handle(), this.sysAdmin.handle()], this.controller.store);
     this.router.patch("/:id", [this.auth.handle(), this.sysAdmin.handle()], this.controller.update);
     this.router.post("/delete", [this.auth.handle(), this.sysAdmin.handle()], this.controller.delete);

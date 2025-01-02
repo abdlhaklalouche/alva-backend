@@ -1,6 +1,5 @@
 import { Model, DataTypes } from "sequelize";
 import database from "../Config/Database";
-import Entity from "./Entity";
 
 class EntityType extends Model {
   public id!: number;

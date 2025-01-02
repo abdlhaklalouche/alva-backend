@@ -1,8 +1,5 @@
 import { Model, DataTypes } from "sequelize";
 import database from "../Config/Database";
-import Room from "./Room";
-import User from "./User";
-import EntityType from "./EntityType";
 
 class Entity extends Model {
   public id!: number;
