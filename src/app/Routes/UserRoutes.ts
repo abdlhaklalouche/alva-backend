@@ -22,6 +22,7 @@ export default class UserRoutes implements IRoutes {
   registerRoutes(): void {
     this.router.post("/login", this.guest.handle(), this.controller.login);
     this.router.post("/check", this.auth.handle(), this.controller.check);
+    this.router.post("/logout", this.auth.handle(), this.controller.logout);
     
     // System Admin Actions
 

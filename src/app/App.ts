@@ -1,5 +1,6 @@
 import express, { Application } from "express";
 import * as bodyParser from "body-parser";
+import cors from "cors";
 
 import routes from "./Routes";
 import database from "./Config/Database";
@@ -19,6 +20,13 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(bodyParser.json());
+    this.app.use(
+      cors({
+        origin: "http://localhost:7000",
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        credentials: true,
+      })
+    );
   }
 
   private initializeRoutes() {

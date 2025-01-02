@@ -23,7 +23,9 @@ export default class UsersController extends Controller {
       attributes: ["id", "name", "email"],
     });
 
-    response.json(users);
+    response.json({
+      data: users,
+    });
   };
 
   login = async (request: IRequest, response: IResponse) => {
@@ -60,9 +62,20 @@ export default class UsersController extends Controller {
       }
     );
 
+    response.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    });
+
     this.success(response, "User logged in successfully", {
       token: token,
     });
+  };
+
+  logout = async (request: IRequest, response: IResponse) => {
+    response.clearCookie("token");
+
+    this.success(response, "User logged out successfully");
   };
 
   check = async (request: IRequest, response: IResponse) => {
@@ -70,9 +83,10 @@ export default class UsersController extends Controller {
       where: {
         id: request.user.id,
       },
+      attributes: ["id", "name", "email", "is_system_admin"],
     });
 
-    response.json(request.user);
+    return this.success(response, "", user);
   };
 
   store = async (request: IRequest, response: IResponse) => {

@@ -1,11 +1,21 @@
 import IRequest from "../Interfaces/IRequest";
 import IResponse from "../Interfaces/IResponse";
-import { Request, Response } from "express";
 import Controller from "./Controller";
-import { Entity } from "../Models";
+import { Entity, EntityType } from "../Models";
 
 export default class EntitiesController extends Controller {
-  all = async (request: IRequest, response: IResponse) => {};
+  all = async (request: IRequest, response: IResponse) => {
+    const entities = await Entity.findAll({
+      include: [
+        {
+          model: EntityType,
+          required: false,
+        },
+      ],
+    });
+
+    response.json(entities);
+  };
 
   single = async (request: IRequest, response: IResponse) => {};
 
