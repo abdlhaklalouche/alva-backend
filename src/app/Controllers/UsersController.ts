@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+import IRequest from "../Interfaces/IRequest";
+import IResponse from "../Interfaces/IResponse";
 import Controller from "./Controller";
 import { Entity, User } from "../Models";
 import {
@@ -6,10 +7,12 @@ import {
   deleteUsersSchema,
   loginUserSchema,
 } from "../Validation/UserSchema";
+
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export default class UsersController extends Controller {
-  all = async (request: Request, response: Response) => {
+  all = async (request: IRequest, response: IResponse) => {
     const users = await User.findAll({
       include: [
         {
@@ -17,12 +20,13 @@ export default class UsersController extends Controller {
           required: false,
         },
       ],
+      attributes: ["id", "name", "email"],
     });
 
     response.json(users);
   };
 
-  login = async (request: Request, response: Response) => {
+  login = async (request: IRequest, response: IResponse) => {
     const { error } = loginUserSchema.validate(request.body);
 
     if (error) return this.failed(response, error.message, error.details);
@@ -43,16 +47,30 @@ export default class UsersController extends Controller {
     if (!isPasswordMatch)
       return this.failed(response, "Invalid password", [], 401);
 
+    const token = jwt.sign(
+      { id: user.id, name: user.name, email: user.email },
+      process.env.JWT_ACCESS_TOKEN_SECRET!,
+      {
+        expiresIn: "2 days",
+      }
+    );
+
     this.success(response, "User logged in successfully", {
-      token: "",
+      token: token,
     });
   };
 
-  check = async (request: Request, response: Response) => {};
+  check = async (request: IRequest, response: IResponse) => {
+    const user = await User.findOne({
+      where: {
+        id: request.user.id,
+      },
+    });
 
-  logout = async (request: Request, response: Response) => {};
+    response.json(request.user);
+  };
 
-  store = async (request: Request, response: Response) => {
+  store = async (request: IRequest, response: IResponse) => {
     const { error } = addUserSchema.validate(request.body);
 
     if (error) return this.failed(response, error.message, error.details);
@@ -66,7 +84,7 @@ export default class UsersController extends Controller {
     this.success(response, "User has been added successfully");
   };
 
-  update = async (request: Request, response: Response) => {
+  update = async (request: IRequest, response: IResponse) => {
     const user = await User.findOne({
       where: {
         id: request.params.id,
@@ -88,7 +106,7 @@ export default class UsersController extends Controller {
     return this.success(response, "User has been updated successfully");
   };
 
-  delete = async (request: Request, response: Response) => {
+  delete = async (request: IRequest, response: IResponse) => {
     const { error } = deleteUsersSchema.validate(request.body);
 
     if (error) return this.failed(response, error.message, error.details);

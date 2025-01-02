@@ -1,15 +1,15 @@
-import { Response } from "express";
+import IResponse from "./IResponse";
 
 export default interface IController {
   success(
-    response: Response,
+    response: IResponse,
     message?: string,
     data?: any,
     status?: number
   ): void;
 
   failed(
-    response: Response,
+    response: IResponse,
     message?: string,
     errors?: any,
     status?: number

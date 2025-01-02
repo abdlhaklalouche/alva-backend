@@ -1,4 +1,4 @@
-import { Response, Router } from "express";
+import { Router } from "express";
 
 export default interface IRoutes {
   router: Router;

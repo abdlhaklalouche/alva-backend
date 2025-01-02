@@ -1,17 +1,19 @@
+import IRequest from "../Interfaces/IRequest";
+import IResponse from "../Interfaces/IResponse";
 import { Request, Response } from "express";
 import Controller from "./Controller";
 import { Device } from "../Models";
 
 export default class DevicesController extends Controller {
-  all = async (request: Request, response: Response) => {
+  all = async (request: IRequest, response: IResponse) => {
     const users = await Device.findAll();
 
     response.json(users);
   };
 
-  store = async (request: Request, response: Response) => {};
+  store = async (request: IRequest, response: IResponse) => {};
 
-  update = async (request: Request, response: Response) => {};
+  update = async (request: IRequest, response: IResponse) => {};
 
-  delete = async (request: Request, response: Response) => {};
+  delete = async (request: IRequest, response: IResponse) => {};
 }

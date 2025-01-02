@@ -1,11 +1,13 @@
 import express, { Router } from "express";
 import IRoutes from "../Interfaces/IRoutes";
 import EntitiesController from "../Controllers/EntitiesController";
+import AuthMiddleware from "../Middlewares/AuthMiddleware";
 
 export default class EntityRoutes implements IRoutes {
   public router: Router;
 
   private controller: EntitiesController = new EntitiesController();
+  private auth: AuthMiddleware = new AuthMiddleware();
 
   constructor() {
     this.router = express.Router();
@@ -13,9 +15,9 @@ export default class EntityRoutes implements IRoutes {
   }
 
   registerRoutes(): void {
-    this.router.get("/", this.controller.all);
-    this.router.put("/", this.controller.store);
-    this.router.patch("/:id", this.controller.update);
-    this.router.post("/delete", this.controller.delete);
+    this.router.get("/", this.auth.handle(), this.controller.all);
+    this.router.put("/", this.auth.handle(), this.controller.store);
+    this.router.patch("/:id", this.auth.handle(), this.controller.update);
+    this.router.post("/delete", this.auth.handle(), this.controller.delete);
   }
 }

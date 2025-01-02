@@ -1,9 +1,9 @@
-import { Response } from "express";
 import IController from "../Interfaces/IController";
+import IResponse from "../Interfaces/IResponse";
 
 class Controller implements IController {
   success(
-    response: Response,
+    response: IResponse,
     message: string = "Success",
     data: any = [],
     status: number = 200
@@ -15,7 +15,7 @@ class Controller implements IController {
   }
 
   failed(
-    response: Response,
+    response: IResponse,
     message: string = "Failed",
     errors: any = [],
     status: number = 400
