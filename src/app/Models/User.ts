@@ -4,6 +4,7 @@ import Entity from "./Entity";
 
 class User extends Model {
   public id!: number;
+  public is_system_admin!: boolean;
   public name!: string;
   public email!: string;
   public password!: string;
@@ -15,6 +16,11 @@ User.init(
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    is_system_admin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
     name: {
       type: DataTypes.STRING,

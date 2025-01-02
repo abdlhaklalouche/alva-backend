@@ -48,7 +48,12 @@ export default class UsersController extends Controller {
       return this.failed(response, "Invalid password", [], 401);
 
     const token = jwt.sign(
-      { id: user.id, name: user.name, email: user.email },
+      {
+        id: user.id,
+        is_system_admin: user.is_system_admin,
+        name: user.name,
+        email: user.email,
+      },
       process.env.JWT_ACCESS_TOKEN_SECRET!,
       {
         expiresIn: "2 days",
@@ -76,6 +81,7 @@ export default class UsersController extends Controller {
     if (error) return this.failed(response, error.message, error.details);
 
     User.create({
+      is_system_admin: request.body.is_system_admin,
       name: request.body.name,
       email: request.body.email,
       password: await bcrypt.hash(request.body.password, 10),
@@ -98,6 +104,7 @@ export default class UsersController extends Controller {
     if (error) return this.failed(response, error.message, error.details);
 
     user.update({
+      is_system_admin: request.body.is_system_admin,
       name: request.body.name,
       email: request.body.email,
       password: await bcrypt.hash(request.body.password, 10),
