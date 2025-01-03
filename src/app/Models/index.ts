@@ -13,7 +13,8 @@ User.hasMany(Entity, {
 });
 
 Entity.hasMany(Room, {
-  foreignKey: "room_id",
+  foreignKey: "entity_id",
+  as: "rooms",
 });
 
 Entity.hasOne(EntityType, {
@@ -24,6 +25,7 @@ Entity.hasOne(EntityType, {
 
 Entity.belongsTo(User, {
   foreignKey: "user_id",
+  as: "user",
 });
 
 Room.hasMany(Device, {

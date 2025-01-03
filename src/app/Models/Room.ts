@@ -26,7 +26,7 @@ Room.init(
   {
     sequelize: database,
     modelName: "Room",
-    tableName: "devices_energies",
+    tableName: "rooms",
     timestamps: false,
   }
 );

@@ -16,6 +16,7 @@ export default class UsersController extends Controller {
   all = async (request: IRequest, response: IResponse) => {
     const users = await User.findAll({
       attributes: ["id", "name", "email", "is_system_admin"],
+      order: [["id", "DESC"]],
     });
 
     response.json({

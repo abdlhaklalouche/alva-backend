@@ -1,8 +1,13 @@
 import IRequest from "../Interfaces/IRequest";
 import IResponse from "../Interfaces/IResponse";
 import Controller from "./Controller";
-import { Entity, EntityType } from "../Models";
-import { addEntitySchema } from "../Validation/EntitySchema";
+import { Entity, EntityType, Room, User } from "../Models";
+import {
+  addEntitySchema,
+  deleteEntitiesSchema,
+  updateEntitySchema,
+} from "../Validation/EntitySchema";
+import { Op, Sequelize } from "sequelize";
 
 export default class EntitiesController extends Controller {
   all = async (request: IRequest, response: IResponse) => {
@@ -13,31 +18,121 @@ export default class EntitiesController extends Controller {
           required: false,
           as: "type",
         },
+        {
+          model: User,
+          required: false,
+          as: "user",
+        },
+        {
+          model: Room,
+          required: false,
+          as: "rooms",
+          attributes: {
+            include: [
+              "id",
+              ["id", "_id"],
+              "name",
+              [Sequelize.literal("false"), "is_new"],
+            ],
+          },
+          order: [["id", "DESC"]],
+        },
       ],
+      order: [["id", "DESC"]],
     });
 
-    response.json(entities);
+    response.json({
+      data: entities,
+    });
   };
-
-  single = async (request: IRequest, response: IResponse) => {};
 
   store = async (request: IRequest, response: IResponse) => {
     const { error } = addEntitySchema.validate(request.body);
 
     if (error) return this.failed(response, error.message, error.details);
 
-    Entity.create({
-      user_id: request.body.user_id,
-      type_id: request.body.type_id,
+    const entity = await Entity.create({
+      user_id: request.body.user.id,
+      type_id: request.body.type.id,
       name: request.body.name,
+    });
+
+    request.body.rooms.map((room: any) => {
+      Room.create({
+        name: room.name,
+        entity_id: entity.id,
+      });
     });
 
     this.success(response, "Entity has been added successfully");
   };
 
-  update = async (request: IRequest, response: IResponse) => {};
+  update = async (request: IRequest, response: IResponse) => {
+    const entity = await Entity.findOne({
+      where: {
+        id: request.params.id,
+      },
+    });
 
-  delete = async (request: IRequest, response: IResponse) => {};
+    if (!entity) return this.failed(response, "User not found");
+
+    const { error } = updateEntitySchema.validate(request.body);
+
+    if (error) return this.failed(response, error.message, error.details);
+
+    await entity.update({
+      user_id: request.body.user.id,
+      type_id: request.body.type.id,
+      name: request.body.name,
+    });
+
+    const updatedRecords = request.body.rooms
+      .filter((item: any) => item.is_new === false)
+      .map((item: any) => item._id);
+
+    await Room.destroy({
+      where: {
+        id: {
+          [Op.notIn]: updatedRecords,
+        },
+      },
+    });
+
+    request.body.rooms.map((room: any) => {
+      if (room.is_new) {
+        Room.create({
+          entity_id: entity.id,
+          name: room.name,
+        });
+      } else {
+        Room.findOne({
+          where: {
+            id: room._id,
+          },
+        }).then((rescord) => {
+          rescord?.update({
+            name: room.name,
+          });
+        });
+      }
+    });
+
+    this.success(response, "Entity has been updated successfully");
+  };
+
+  delete = async (request: IRequest, response: IResponse) => {
+    const { error } = deleteEntitiesSchema.validate(request.body);
+
+    if (error) return this.failed(response, error.message, error.details);
+
+    await Entity.destroy({
+      where: {
+        id: request.body.ids,
+      },
+    });
+
+    return this.success(response, "Entities has been deleted successfully");
+  };
 
   userAll = async (request: IRequest, response: IResponse) => {};
 
