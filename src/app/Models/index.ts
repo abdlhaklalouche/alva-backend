@@ -9,6 +9,7 @@ import EntityType from "./EntityType";
 
 User.hasMany(Entity, {
   foreignKey: "user_id",
+  as: "entities",
 });
 
 Entity.hasMany(Room, {
@@ -16,16 +17,13 @@ Entity.hasMany(Room, {
 });
 
 Entity.hasOne(EntityType, {
-  foreignKey: "type_id",
+  foreignKey: "id",
+  sourceKey: "type_id",
+  as: "type",
 });
 
 Entity.belongsTo(User, {
   foreignKey: "user_id",
-});
-
-EntityType.hasMany(Entity, {
-  foreignKey: "type_id",
-  as: "types",
 });
 
 Room.hasMany(Device, {

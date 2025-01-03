@@ -1,11 +1,12 @@
 import IRequest from "../Interfaces/IRequest";
 import IResponse from "../Interfaces/IResponse";
 import Controller from "./Controller";
-import { Entity, User } from "../Models";
+import { Entity, EntityType, User } from "../Models";
 import {
   addUserSchema,
   deleteUsersSchema,
   loginUserSchema,
+  updateUserSchema,
 } from "../Validation/UserSchema";
 
 import bcrypt from "bcrypt";
@@ -14,13 +15,7 @@ import jwt from "jsonwebtoken";
 export default class UsersController extends Controller {
   all = async (request: IRequest, response: IResponse) => {
     const users = await User.findAll({
-      include: [
-        {
-          model: Entity,
-          required: false,
-        },
-      ],
-      attributes: ["id", "name", "email"],
+      attributes: ["id", "name", "email", "is_system_admin"],
     });
 
     response.json({
@@ -84,6 +79,20 @@ export default class UsersController extends Controller {
         id: request.user.id,
       },
       attributes: ["id", "name", "email", "is_system_admin"],
+      include: [
+        {
+          model: Entity,
+          required: false,
+          as: "entities",
+          include: [
+            {
+              model: EntityType,
+              required: false,
+              as: "type",
+            },
+          ],
+        },
+      ],
     });
 
     return this.success(response, "", user);
@@ -113,7 +122,7 @@ export default class UsersController extends Controller {
 
     if (!user) return this.failed(response, "User not found");
 
-    const { error } = addUserSchema.validate(request.body);
+    const { error } = updateUserSchema.validate(request.body);
 
     if (error) return this.failed(response, error.message, error.details);
 
@@ -121,7 +130,9 @@ export default class UsersController extends Controller {
       is_system_admin: request.body.is_system_admin,
       name: request.body.name,
       email: request.body.email,
-      password: await bcrypt.hash(request.body.password, 10),
+      password: request.body.password
+        ? await bcrypt.hash(request.body.password, 10)
+        : user.password,
     });
 
     return this.success(response, "User has been updated successfully");

@@ -23,7 +23,7 @@ class App {
     this.app.use(
       cors({
         origin: "http://localhost:7000",
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         credentials: true,
       })
     );
