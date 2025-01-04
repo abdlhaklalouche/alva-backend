@@ -74,7 +74,7 @@ export default class EntitiesController extends Controller {
       },
     });
 
-    if (!entity) return this.failed(response, "User not found");
+    if (!entity) return this.failed(response, "Entity not found");
 
     const { error } = updateEntitySchema.validate(request.body);
 

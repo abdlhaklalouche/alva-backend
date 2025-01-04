@@ -25,7 +25,9 @@ export default class DeviceRoutes implements IRoutes {
 
     // System Admin Actions
 
-    this.router.get("/:id", [this.auth.handle(), this.sysAdmin.handle()], this.controller.single);
+    this.router.get("/", [this.auth.handle(), this.sysAdmin.handle()], this.controller.all);
+    this.router.put("/", [this.auth.handle(), this.sysAdmin.handle()], this.controller.store);
     this.router.patch("/:id", [this.auth.handle(), this.sysAdmin.handle()], this.controller.update);
+    this.router.post("/delete", [this.auth.handle(), this.sysAdmin.handle()], this.controller.delete);
   }
 }

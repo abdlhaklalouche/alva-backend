@@ -4,6 +4,7 @@ import database from "../Config/Database";
 class Device extends Model {
   public id!: number;
   public name!: string;
+  public status!: string;
   public room_id!: number;
 }
 
@@ -15,6 +16,10 @@ Device.init(
       autoIncrement: true,
     },
     name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    status: {
       type: DataTypes.STRING,
       allowNull: false,
     },

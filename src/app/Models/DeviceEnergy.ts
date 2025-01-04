@@ -14,7 +14,11 @@ DeviceEnergy.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    value: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    time: {
       type: DataTypes.STRING,
       allowNull: false,
     },

@@ -35,18 +35,22 @@ Room.hasMany(Device, {
 
 Room.belongsTo(Entity, {
   foreignKey: "entity_id",
+  as: "entity",
 });
 
 Device.hasMany(DeviceEnergy, {
   foreignKey: "device_id",
+  as: "energies",
 });
 
 Device.belongsTo(Room, {
   foreignKey: "room_id",
+  as: "room",
 });
 
 DeviceEnergy.belongsTo(Device, {
   foreignKey: "device_id",
+  as: "device",
 });
 
 export { User, EntityType, Entity, Room, Device, DeviceEnergy };
