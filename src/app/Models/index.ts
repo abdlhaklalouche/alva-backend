@@ -31,6 +31,8 @@ Entity.belongsTo(User, {
 
 Room.hasMany(Device, {
   foreignKey: "room_id",
+  as: "devices",
+  onDelete: "cascade",
 });
 
 Room.belongsTo(Entity, {

@@ -34,6 +34,28 @@ export const updateEntitySchema = Joi.object({
   ),
 }).options({ allowUnknown: true });
 
+export const addUserEntitySchema = Joi.object({
+  type: Joi.required(),
+  name: Joi.string().required(),
+  rooms: Joi.array().items(
+    Joi.object().keys({
+      is_new: Joi.boolean().required(),
+      name: Joi.string().required(),
+    })
+  ),
+}).options({ allowUnknown: true });
+
+export const updateUserEntitySchema = Joi.object({
+  type: Joi.required(),
+  name: Joi.string().required(),
+  rooms: Joi.array().items(
+    Joi.object().keys({
+      is_new: Joi.boolean().required(),
+      name: Joi.string().required(),
+    })
+  ),
+}).options({ allowUnknown: true });
+
 export const deleteEntitiesSchema = Joi.object({
   ids: Joi.array().min(1),
 }).options({ allowUnknown: true });
