@@ -15,6 +15,7 @@ User.hasMany(Entity, {
 Entity.hasMany(Room, {
   foreignKey: "entity_id",
   as: "rooms",
+  onDelete: "cascade",
 });
 
 Entity.hasOne(EntityType, {

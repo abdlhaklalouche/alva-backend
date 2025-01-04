@@ -19,6 +19,12 @@ export const loginUserSchema = Joi.object({
   password: Joi.string().min(6).max(30).required(),
 }).options({ allowUnknown: true });
 
+export const accountUsersSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().optional().allow("").min(6).max(30),
+}).options({ allowUnknown: true });
+
 export const deleteUsersSchema = Joi.object({
   ids: Joi.array().min(1),
 }).options({ allowUnknown: true });

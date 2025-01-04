@@ -3,6 +3,7 @@ import IResponse from "../Interfaces/IResponse";
 import Controller from "./Controller";
 import { Entity, EntityType, User } from "../Models";
 import {
+  accountUsersSchema,
   addUserSchema,
   deleteUsersSchema,
   loginUserSchema,
@@ -97,6 +98,29 @@ export default class UsersController extends Controller {
     });
 
     return this.success(response, "", user);
+  };
+
+  account = async (request: IRequest, response: IResponse) => {
+    const { error } = accountUsersSchema.validate(request.body);
+
+    if (error) return this.failed(response, error.message, error.details);
+
+    const data: any = {
+      name: request.body.name,
+      email: request.body.email,
+    };
+
+    if (request.body.password) {
+      data.password = await bcrypt.hash(request.body.password, 10);
+    }
+
+    await User.update(data, {
+      where: {
+        id: request.user.id,
+      },
+    });
+
+    return this.success(response, "Settings has been updated successfully");
   };
 
   store = async (request: IRequest, response: IResponse) => {
