@@ -4,8 +4,16 @@ import Controller from "./Controller";
 import { EntityType } from "../Models";
 import { updateEntityTypesSchema } from "../Validation/EntitySchema";
 import { Op, Sequelize } from "sequelize";
+import IApplication from "../Interfaces/IApplication";
 
 export default class EntityTypesController extends Controller {
+  public app: IApplication;
+
+  constructor(app: IApplication) {
+    super();
+    this.app = app;
+  }
+
   all = async (request: IRequest, response: IResponse) => {
     const types = await EntityType.findAll({
       attributes: {

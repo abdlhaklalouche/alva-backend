@@ -12,8 +12,16 @@ import {
 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import IApplication from "../Interfaces/IApplication";
 
 export default class UsersController extends Controller {
+  public app: IApplication;
+
+  constructor(app: IApplication) {
+    super();
+    this.app = app;
+  }
+
   all = async (request: IRequest, response: IResponse) => {
     const users = await User.findAll({
       attributes: ["id", "name", "email", "is_system_admin"],

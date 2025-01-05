@@ -4,17 +4,24 @@ import EntitiesController from "../Controllers/EntitiesController";
 import AuthMiddleware from "../Middlewares/AuthMiddleware";
 import SysAdminMiddleware from "../Middlewares/SysAdminMiddleware";
 import EntityTypesController from "../Controllers/EntityTypesController";
+import IApplication from "../Interfaces/IApplication";
 
 export default class EntityRoutes implements IRoutes {
   public router: Router;
+  public app: IApplication;
 
-  private controller: EntitiesController = new EntitiesController();
-  private typesController: EntityTypesController = new EntityTypesController();
+  private controller: EntitiesController;
+  private typesController: EntityTypesController;
   private auth: AuthMiddleware = new AuthMiddleware();
   private sysAdmin: SysAdminMiddleware = new SysAdminMiddleware();
 
-  constructor() {
+  constructor(app: IApplication) {
+    this.app = app;
     this.router = express.Router();
+
+    this.controller = new EntitiesController(app);
+    this.typesController = new EntityTypesController(app);
+
     this.registerRoutes();
   }
 

@@ -15,8 +15,16 @@ import {
   deleteDevicesSchema,
   updateDeviceSchema,
 } from "../Validation/DeviceSchema";
+import IApplication from "../Interfaces/IApplication";
 
 export default class DevicesController extends Controller {
+  public app: IApplication;
+
+  constructor(app: IApplication) {
+    super();
+    this.app = app;
+  }
+
   all = async (request: IRequest, response: IResponse) => {
     const devices = await Device.findAll({
       include: [

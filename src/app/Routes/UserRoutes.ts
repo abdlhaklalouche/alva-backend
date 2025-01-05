@@ -4,17 +4,23 @@ import IRoutes from "../Interfaces/IRoutes";
 import AuthMiddleware from "../Middlewares/AuthMiddleware";
 import GuestMiddleware from "../Middlewares/GuestMiddleware";
 import SysAdminMiddleware from "../Middlewares/SysAdminMiddleware";
+import IApplication from "../Interfaces/IApplication";
 
 export default class UserRoutes implements IRoutes {
   public router: Router;
+  public app: IApplication;
 
-  private controller: UsersController = new UsersController();
+  private controller: UsersController;
   private auth: AuthMiddleware = new AuthMiddleware();
   private guest: GuestMiddleware = new GuestMiddleware();
   private sysAdmin: SysAdminMiddleware = new SysAdminMiddleware();
 
-  constructor() {
+  constructor(app: IApplication) {
+    this.app = app;
     this.router = express.Router();
+
+    this.controller = new UsersController(this.app);
+
     this.registerRoutes();
   }
 

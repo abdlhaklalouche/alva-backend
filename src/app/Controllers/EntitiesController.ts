@@ -9,8 +9,16 @@ import {
   updateEntitySchema,
 } from "../Validation/EntitySchema";
 import { Op, Sequelize } from "sequelize";
+import IApplication from "../Interfaces/IApplication";
 
 export default class EntitiesController extends Controller {
+  public app: IApplication;
+
+  constructor(app: IApplication) {
+    super();
+    this.app = app;
+  }
+
   all = async (request: IRequest, response: IResponse) => {
     const entities = await Entity.findAll({
       include: [
@@ -69,6 +77,8 @@ export default class EntitiesController extends Controller {
   };
 
   update = async (request: IRequest, response: IResponse) => {
+    this.app.io.emit("receive_message", "Hello");
+
     const entity = await Entity.findOne({
       where: {
         id: request.params.id,

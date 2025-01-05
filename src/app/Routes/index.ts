@@ -1,12 +1,12 @@
-import { Application } from "express";
 import UserRoutes from "./UserRoutes";
 import EntityRoutes from "./EntityRoutes";
 import DeviceRoutes from "./DeviceRoutes";
+import IApplication from "../Interfaces/IApplication";
 
-const routes = (app: Application): void => {
-  app.use("/users", new UserRoutes().router);
-  app.use("/entities", new EntityRoutes().router);
-  app.use("/devices", new DeviceRoutes().router);
+const routes = (app: IApplication): void => {
+  app.app.use("/users", new UserRoutes(app).router);
+  app.app.use("/entities", new EntityRoutes(app).router);
+  app.app.use("/devices", new DeviceRoutes(app).router);
 };
 
 export default routes;

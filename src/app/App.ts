@@ -6,8 +6,9 @@ import http from "http";
 import { Server } from "socket.io";
 import routes from "./Routes";
 import database from "./Config/Database";
+import IApplication from "./Interfaces/IApplication";
 
-class App {
+class App implements IApplication {
   public server: http.Server;
   public app: Application;
   public io: Server;
@@ -47,7 +48,7 @@ class App {
   }
 
   private initializeRoutes() {
-    routes(this.app);
+    routes(this);
   }
 
   private async establishDbConnection() {

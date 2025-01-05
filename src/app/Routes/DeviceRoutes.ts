@@ -3,16 +3,22 @@ import IRoutes from "../Interfaces/IRoutes";
 import DevicesController from "../Controllers/DevicesController";
 import AuthMiddleware from "../Middlewares/AuthMiddleware";
 import SysAdminMiddleware from "../Middlewares/SysAdminMiddleware";
+import IApplication from "../Interfaces/IApplication";
 
 export default class DeviceRoutes implements IRoutes {
   public router: Router;
+  public app: IApplication;
 
-  private controller: DevicesController = new DevicesController();
+  private controller: DevicesController;
   private auth: AuthMiddleware = new AuthMiddleware();
   private sysAdmin: SysAdminMiddleware = new SysAdminMiddleware();
 
-  constructor() {
+  constructor(app: IApplication) {
+    this.app = app;
     this.router = express.Router();
+
+    this.controller = new DevicesController(app);
+
     this.registerRoutes();
   }
 
