@@ -23,6 +23,7 @@ class App {
 
   private initializeMiddlewares() {
     this.app.use(bodyParser.json());
+
     this.app.use(
       cors({
         origin: process.env.PORTAL_URL,

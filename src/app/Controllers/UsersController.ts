@@ -62,6 +62,7 @@ export default class UsersController extends Controller {
     response.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      domain: process.env.SESSION_DOMAIN,
     });
 
     this.success(response, "User logged in successfully", {
