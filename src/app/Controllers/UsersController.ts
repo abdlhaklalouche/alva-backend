@@ -71,7 +71,9 @@ export default class UsersController extends Controller {
   };
 
   logout = async (request: IRequest, response: IResponse) => {
-    response.clearCookie("token");
+    response.clearCookie("token", {
+      domain: process.env.SESSION_DOMAIN,
+    });
 
     this.success(response, "User logged out successfully");
   };
