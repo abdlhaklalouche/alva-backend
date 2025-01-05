@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import * as bodyParser from "body-parser";
 import cors from "cors";
+import dontenv from "dotenv";
 
 import routes from "./Routes";
 import database from "./Config/Database";
@@ -13,6 +14,8 @@ class App {
     this.app = express();
     this.port = process.env.PORT || port;
 
+    dontenv.config();
+
     this.establishDbConnection();
     this.initializeMiddlewares();
     this.initializeRoutes();
@@ -22,7 +25,7 @@ class App {
     this.app.use(bodyParser.json());
     this.app.use(
       cors({
-        origin: "http://localhost:7000",
+        origin: process.env.PORTAL_URL,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         credentials: true,
       })
