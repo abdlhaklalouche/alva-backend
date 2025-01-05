@@ -2,23 +2,36 @@ import express, { Application } from "express";
 import * as bodyParser from "body-parser";
 import cors from "cors";
 import dontenv from "dotenv";
-
+import http from "http";
+import { Server } from "socket.io";
 import routes from "./Routes";
 import database from "./Config/Database";
 
 class App {
+  public server: http.Server;
   public app: Application;
+  public io: Server;
   public port: number;
 
   constructor(port: any) {
+    dontenv.config();
+
     this.app = express();
     this.port = process.env.PORT || port;
 
-    dontenv.config();
+    this.server = http.createServer(this.app);
+
+    this.io = new Server(this.server, {
+      cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+      },
+    });
 
     this.establishDbConnection();
     this.initializeMiddlewares();
     this.initializeRoutes();
+    this.listenToSocket();
   }
 
   private initializeMiddlewares() {
@@ -48,8 +61,16 @@ class App {
     }
   }
 
+  private listenToSocket() {
+    this.io.on("connection", (socket) => {
+      socket.on("message", (data) => {});
+
+      socket.on("disconnect", () => {});
+    });
+  }
+
   public listen() {
-    this.app.listen(this.port, () => {
+    this.server.listen(this.port, () => {
       console.log(`Application is listening on the port ${this.port}`);
     });
   }
