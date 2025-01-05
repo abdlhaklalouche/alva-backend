@@ -1,7 +1,7 @@
 import IRequest from "../Interfaces/IRequest";
 import IResponse from "../Interfaces/IResponse";
 import Controller from "./Controller";
-import { Entity, EntityType, Room, User } from "../Models";
+import { Device, Entity, EntityType, Room, User } from "../Models";
 import {
   addEntitySchema,
   addUserEntitySchema,
@@ -170,6 +170,13 @@ export default class EntitiesController extends Controller {
               [Sequelize.literal("false"), "is_new"],
             ],
           },
+          include: [
+            {
+              model: Device,
+              required: false,
+              as: "devices",
+            },
+          ],
           order: [["id", "DESC"]],
         },
       ],
