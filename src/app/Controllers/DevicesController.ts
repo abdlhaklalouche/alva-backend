@@ -1,7 +1,14 @@
 import { Op, Sequelize } from "sequelize";
 import IRequest from "../Interfaces/IRequest";
 import IResponse from "../Interfaces/IResponse";
-import { Device, DeviceEnergy, Entity, Room, User } from "../Models";
+import {
+  Device,
+  DeviceEnergy,
+  Entity,
+  EntityType,
+  Room,
+  User,
+} from "../Models";
 import Controller from "./Controller";
 import {
   addDeviceSchema,
@@ -173,6 +180,11 @@ export default class DevicesController extends Controller {
                   attributes: {
                     exclude: ["password"],
                   },
+                },
+                {
+                  model: EntityType,
+                  required: false,
+                  as: "type",
                 },
               ],
             },
