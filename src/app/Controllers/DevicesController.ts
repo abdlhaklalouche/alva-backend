@@ -82,7 +82,7 @@ export default class DevicesController extends Controller {
     const device = await Device.create({
       room_id: request.body.room.id,
       name: request.body.name,
-      status: request.body.name,
+      status: request.body.status,
     });
 
     request.body.energies.map((room: any) => {
@@ -230,7 +230,7 @@ export default class DevicesController extends Controller {
     const device = await Device.create({
       room_id: request.body.room.id,
       name: request.body.name,
-      status: request.body.name,
+      status: request.body.status,
     });
 
     request.body.energies.map((room: any) => {

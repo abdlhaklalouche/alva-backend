@@ -7,6 +7,7 @@ import {
   addUserEntitySchema,
   deleteEntitiesSchema,
   updateEntitySchema,
+  updateUserEntitySchema,
 } from "../Validation/EntitySchema";
 import { Op, Sequelize } from "sequelize";
 import IApplication from "../Interfaces/IApplication";
@@ -77,8 +78,6 @@ export default class EntitiesController extends Controller {
   };
 
   update = async (request: IRequest, response: IResponse) => {
-    this.app.io.emit("receive_message", "Hello");
-
     const entity = await Entity.findOne({
       where: {
         id: request.params.id,
@@ -221,7 +220,7 @@ export default class EntitiesController extends Controller {
 
     if (!entity) return this.failed(response, "Entity not found");
 
-    const { error } = updateEntitySchema.validate(request.body);
+    const { error } = updateUserEntitySchema.validate(request.body);
 
     if (error) return this.failed(response, error.message, error.details);
 

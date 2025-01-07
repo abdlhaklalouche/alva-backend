@@ -15,7 +15,7 @@ DeviceEnergy.init(
       autoIncrement: true,
     },
     value: {
-      type: DataTypes.STRING,
+      type: DataTypes.DECIMAL,
       allowNull: false,
     },
     time: {
