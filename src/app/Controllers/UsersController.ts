@@ -73,7 +73,7 @@ export default class UsersController extends Controller {
       domain: process.env.SESSION_DOMAIN,
     });
 
-    this.success(response, "User logged in successfully", {
+    return this.success(response, "User logged in successfully", {
       token: token,
     });
   };
@@ -89,7 +89,7 @@ export default class UsersController extends Controller {
   check = async (request: IRequest, response: IResponse) => {
     const user = await User.findOne({
       where: {
-        id: request.user.id,
+        id: request.user?.id,
       },
       attributes: ["id", "name", "email", "is_system_admin"],
       include: [
@@ -108,7 +108,7 @@ export default class UsersController extends Controller {
       ],
     });
 
-    return this.success(response, "", user);
+    this.success(response, "", user);
   };
 
   account = async (request: IRequest, response: IResponse) => {
