@@ -16,7 +16,7 @@ export default class InsightsController extends Controller {
   }
 
   dashboard = async (request: IRequest, response: IResponse) => {
-    const period = request.query.period as FilterPeriod;
+    const period = FilterPeriod.month;
 
     const { startDate, endDate } = getDateRange(period);
 
