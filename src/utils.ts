@@ -13,7 +13,23 @@ export const getDateRange = (
   let endDate: Date;
 
   switch (period) {
-    case FilterPeriod.month:
+    case FilterPeriod.week:
+      const lastWeekStart = new Date(currentDate);
+      lastWeekStart.setDate(currentDate.getDate() - currentDate.getDay() - 7);
+      const lastWeekEnd = new Date(lastWeekStart);
+      lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
+      startDate = lastWeekStart;
+      endDate = lastWeekEnd;
+      break;
+
+    case FilterPeriod.year:
+      const lastYearStart = new Date(currentDate.getFullYear() - 1, 0, 1);
+      const lastYearEnd = new Date(currentDate.getFullYear() - 1, 11, 31);
+      startDate = lastYearStart;
+      endDate = lastYearEnd;
+      break;
+
+    default:
       const lastMonthStart = new Date(
         currentDate.getFullYear(),
         currentDate.getMonth() - 1,
@@ -26,22 +42,6 @@ export const getDateRange = (
       );
       startDate = lastMonthStart;
       endDate = lastMonthEnd;
-      break;
-
-    case FilterPeriod.year:
-      const lastYearStart = new Date(currentDate.getFullYear() - 1, 0, 1);
-      const lastYearEnd = new Date(currentDate.getFullYear() - 1, 11, 31);
-      startDate = lastYearStart;
-      endDate = lastYearEnd;
-      break;
-
-    default:
-      const lastWeekStart = new Date(currentDate);
-      lastWeekStart.setDate(currentDate.getDate() - currentDate.getDay() - 7);
-      const lastWeekEnd = new Date(lastWeekStart);
-      lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
-      startDate = lastWeekStart;
-      endDate = lastWeekEnd;
       break;
   }
 
