@@ -7,7 +7,6 @@ import { Server } from "socket.io";
 import routes from "./Routes";
 import database from "./Config/Database";
 import IApplication from "./Interfaces/IApplication";
-import cron from "node-cron";
 import IJob from "./Interfaces/IJob";
 import EnergyConsumptionJob from "./Jobs/EnergyConsumptionJob";
 
@@ -69,10 +68,7 @@ class App implements IApplication {
   private registerCronJobs() {
     const jobs: IJob[] = [new EnergyConsumptionJob()];
 
-    // Running every one minute
-    cron.schedule("*/5 * * * * *", () => {
-      jobs.map((job) => job.handle(this));
-    });
+    jobs.map((job) => job.schedule(this));
   }
 
   private listenToSocket() {
