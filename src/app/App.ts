@@ -7,6 +7,9 @@ import { Server } from "socket.io";
 import routes from "./Routes";
 import database from "./Config/Database";
 import IApplication from "./Interfaces/IApplication";
+import cron from "node-cron";
+import IJob from "./Interfaces/IJob";
+import EnergyConsumptionJob from "./Jobs/EnergyConsumptionJob";
 
 class App implements IApplication {
   public server: http.Server;
@@ -32,6 +35,7 @@ class App implements IApplication {
     this.establishDbConnection();
     this.initializeMiddlewares();
     this.initializeRoutes();
+    this.registerCronJobs();
     this.listenToSocket();
   }
 
@@ -60,6 +64,15 @@ class App implements IApplication {
     } catch (error) {
       console.log(`Unable to connect to the database: ${error}`);
     }
+  }
+
+  private registerCronJobs() {
+    const jobs: IJob[] = [new EnergyConsumptionJob()];
+
+    // Running every one minute
+    cron.schedule("*/5 * * * * *", () => {
+      jobs.map((job) => job.handle(this));
+    });
   }
 
   private listenToSocket() {
