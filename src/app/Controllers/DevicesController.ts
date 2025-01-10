@@ -249,8 +249,24 @@ export default class DevicesController extends Controller {
     const device = await Device.findOne({
       where: {
         id: request.params.id,
-        user_id: request.user.id,
       },
+      include: [
+        {
+          model: Room,
+          required: true,
+          as: "room",
+          include: [
+            {
+              model: Entity,
+              required: true,
+              as: "entity",
+              where: {
+                user_id: request.user.id,
+              },
+            },
+          ],
+        },
+      ],
     });
 
     if (!device) return this.failed(response, "Device not found");
@@ -271,7 +287,7 @@ export default class DevicesController extends Controller {
 
     await DeviceEnergy.destroy({
       where: {
-        device: device.id,
+        device_id: device.id,
         id: {
           [Op.notIn]: updatedRecords,
         },
