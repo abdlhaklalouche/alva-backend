@@ -121,6 +121,7 @@ export default class DevicesController extends Controller {
 
     await DeviceEnergy.destroy({
       where: {
+        device: device.id,
         id: {
           [Op.notIn]: updatedRecords,
         },
@@ -270,6 +271,7 @@ export default class DevicesController extends Controller {
 
     await DeviceEnergy.destroy({
       where: {
+        device: device.id,
         id: {
           [Op.notIn]: updatedRecords,
         },

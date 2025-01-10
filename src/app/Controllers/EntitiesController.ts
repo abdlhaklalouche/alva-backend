@@ -102,6 +102,7 @@ export default class EntitiesController extends Controller {
 
     await Room.destroy({
       where: {
+        entity_id: entity.id,
         id: {
           [Op.notIn]: updatedRecords,
         },
@@ -196,14 +197,15 @@ export default class EntitiesController extends Controller {
     if (error) return this.failed(response, error.message, error.details);
 
     const entity = await Entity.create({
+      user_id: request.user.id,
       type_id: request.body.type.id,
       name: request.body.name,
     });
 
     request.body.rooms.map((room: any) => {
       Room.create({
-        name: room.name,
         entity_id: entity.id,
+        name: room.name,
       });
     });
 
@@ -235,6 +237,7 @@ export default class EntitiesController extends Controller {
 
     await Room.destroy({
       where: {
+        entity_id: entity.id,
         id: {
           [Op.notIn]: updatedRecords,
         },
