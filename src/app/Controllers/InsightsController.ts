@@ -144,7 +144,7 @@ export default class InsightsController extends Controller {
       attributes: [
         [
           Sequelize.literal("TO_CHAR(CAST(time AS timestamp), 'YYYY-MM-DD')"),
-          "day", // Group by date in 'yyyy-mm-dd' format
+          "day",
         ],
         [
           Sequelize.fn("SUM", Sequelize.literal("CAST(value AS NUMERIC)")),
@@ -208,13 +208,11 @@ export default class InsightsController extends Controller {
                 {
                   model: DeviceEnergy,
                   as: "energies",
-                  attributes: [
-                    [
-                      Sequelize.fn("SUM", Sequelize.col("value")),
-                      "total_energy",
-                    ],
-                  ],
-                  required: true,
+                  where: {
+                    time: {
+                      [Op.between]: [startDate, endDate],
+                    },
+                  },
                 },
               ],
             },
@@ -224,14 +222,10 @@ export default class InsightsController extends Controller {
       attributes: [
         "id",
         "name",
-        [
-          Sequelize.literal(
-            `(SELECT SUM("value") FROM "devices_energies" WHERE "devices_energies"."device_id" = "rooms->devices"."id")`
-          ),
-          "total_energy_for_entity",
-        ],
+        [Sequelize.fn("date", Sequelize.col("time")), "date"],
       ],
       group: [
+        [Sequelize.fn("date", Sequelize.col("time")), "date"] as any,
         "Entity.id",
         "rooms.id",
         "rooms->devices.id",
@@ -276,12 +270,12 @@ export default class InsightsController extends Controller {
       },
       group: [
         Sequelize.fn("date", Sequelize.col("time")),
-        Sequelize.col("device.id"), // Group by the device name
-        Sequelize.col("device.name"), // Group by the device name
+        Sequelize.col("device.id"),
+        Sequelize.col("device.name"),
       ],
       order: [
-        [Sequelize.fn("date", Sequelize.col("time")), "ASC"], // Order by date
-        [Sequelize.col("device.name"), "ASC"], // Optionally, order by device name
+        [Sequelize.fn("date", Sequelize.col("time")), "ASC"],
+        [Sequelize.col("device.name"), "ASC"],
       ],
     });
 
@@ -301,11 +295,28 @@ export default class InsightsController extends Controller {
       value: groupedEnergiesData[key],
     }));
 
-    const entitiesData = entities.map((entity) => ({
-      entity: entity.name,
-      consumption: parseInt(entity.dataValues.total_energy_for_entity ?? 0),
-      fill: getRandomBlackShade(),
-    }));
+    const entitiesData = entities.map((entity: any) => {
+      const totalEnergy = entity.rooms.reduce((roomSum: any, room: any) => {
+        return (
+          roomSum +
+          room.devices.reduce((deviceSum: any, device: any) => {
+            return (
+              deviceSum +
+              device.energies.reduce((energySum: any, energy: any) => {
+                return energySum + parseFloat(energy.value);
+              }, 0)
+            );
+          }, 0)
+        );
+      }, 0);
+
+      return {
+        id: entity.id,
+        name: entity.name,
+        consumption: totalEnergy,
+        fill: getRandomBlackShade(),
+      };
+    });
 
     const groupedData: {
       [date: string]: { [deviceName: string]: string | number };
