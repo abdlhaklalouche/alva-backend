@@ -121,7 +121,7 @@ export default class DevicesController extends Controller {
 
     await DeviceEnergy.destroy({
       where: {
-        device: device.id,
+        device_id: device.id,
         id: {
           [Op.notIn]: updatedRecords,
         },
