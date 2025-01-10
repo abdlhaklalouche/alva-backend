@@ -20,7 +20,7 @@ export default class InsightsController extends Controller {
 
     const { startDate, endDate } = getDateRange(period);
 
-    const devices = await Device.count({
+    const devicesCount = await Device.count({
       include: [
         {
           model: Room,
@@ -40,7 +40,7 @@ export default class InsightsController extends Controller {
       ],
     });
 
-    const rooms = await Room.count({
+    const roomsCount = await Room.count({
       include: [
         {
           model: Entity,
@@ -53,92 +53,11 @@ export default class InsightsController extends Controller {
       ],
     });
 
-    const entities = await Entity.count({
+    const entitiesCount = await Entity.count({
       where: {
         user_id: request.user.id,
       },
     });
-
-    const result = await DeviceEnergy.findAll({
-      attributes: [
-        [
-          Sequelize.literal("TO_CHAR(CAST(time AS timestamp), 'YYYY-MM-DD')"),
-          "day",
-        ],
-        [
-          Sequelize.fn("SUM", Sequelize.literal("CAST(value AS NUMERIC)")),
-          "total",
-        ],
-        "device.id",
-        "device.room.id",
-        "device.room.entity.id",
-        "device.room.entity.id",
-      ],
-      include: [
-        {
-          model: Device,
-          as: "device",
-          include: [
-            {
-              model: Room,
-              as: "room",
-              include: [
-                {
-                  model: Entity,
-                  as: "entity",
-                  where: {
-                    user_id: request.user.id,
-                  },
-                },
-              ],
-            },
-          ],
-        },
-      ],
-      where: {
-        time: {
-          [Op.between]: [startDate, endDate],
-        },
-      },
-      group: [
-        Sequelize.literal(
-          "TO_CHAR(CAST(time AS timestamp), 'YYYY-MM-DD')"
-        ) as any,
-        "device.id",
-        "device.room.id",
-        "device.room.entity.id",
-      ],
-      order: [["day", "ASC"]],
-    });
-
-    const groupedEnergiesData = result.reduce((acc: any, deviceEnergy: any) => {
-      const total = parseFloat(deviceEnergy.dataValues.total);
-
-      if (!acc[deviceEnergy.dataValues.day]) {
-        acc[deviceEnergy.dataValues.day] = 0;
-      }
-      acc[deviceEnergy.dataValues.day] += total;
-
-      return acc;
-    }, {});
-
-    const energyData = Object.keys(groupedEnergiesData).map((key) => ({
-      key: key,
-      value: groupedEnergiesData[key],
-    }));
-
-    response.json({
-      consumption: energyData,
-      devices: devices,
-      entities: entities,
-      rooms: rooms,
-    });
-  };
-
-  insights = async (request: IRequest, response: IResponse) => {
-    const period = (request.query.period ?? FilterPeriod.month) as FilterPeriod;
-
-    const { startDate, endDate } = getDateRange(period);
 
     const result = await DeviceEnergy.findAll({
       attributes: [
@@ -342,6 +261,15 @@ export default class InsightsController extends Controller {
       consumption: energyData,
       entities_consumption: entitiesData,
       devices_consumption: devicesData,
+      counts: {
+        entities: entitiesCount,
+        rooms: roomsCount,
+        devices: devicesCount,
+      },
     });
+  };
+
+  insights = async (request: IRequest, response: IResponse) => {
+    response.json({});
   };
 }
