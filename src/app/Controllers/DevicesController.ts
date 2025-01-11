@@ -242,6 +242,8 @@ export default class DevicesController extends Controller {
       });
     });
 
+    this.app.io.in(request.user.email).emit("dashboard_changed");
+
     this.success(response, "Device has been added successfully");
   };
 
@@ -322,8 +324,6 @@ export default class DevicesController extends Controller {
       }
     });
 
-    console.log(device.room.entity.user.email);
-
     this.app.io.in(device.room.entity.user.email).emit("dashboard_changed");
 
     this.success(response, "Device has been updated successfully");
@@ -337,7 +337,6 @@ export default class DevicesController extends Controller {
     await Device.destroy({
       where: {
         id: request.body.ids,
-        user_id: request.user.id,
       },
     });
 
