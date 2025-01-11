@@ -6,6 +6,8 @@ class Device extends Model {
   public id!: number;
   public name!: string;
   public status!: string;
+  public last_time_on!: string;
+  public notified!: boolean;
   public room_id!: number;
   public room!: Room;
 }
@@ -23,6 +25,14 @@ Device.init(
     },
     status: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    last_time_on: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    notified: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
     room_id: {

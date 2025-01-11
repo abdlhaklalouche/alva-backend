@@ -16,6 +16,9 @@ import {
   updateDeviceSchema,
 } from "../Validation/DeviceSchema";
 import IApplication from "../Interfaces/IApplication";
+import INotification from "../Interfaces/INotification";
+import moment from "moment";
+import { DeviceStatus } from "../Enum/DeviceStatus";
 
 export default class DevicesController extends Controller {
   public app: IApplication;
@@ -83,6 +86,8 @@ export default class DevicesController extends Controller {
       room_id: request.body.room.id,
       name: request.body.name,
       status: request.body.status,
+      notified: false,
+      last_time_on: moment(moment.now()).format("YYYY-MM-DD HH:mm"),
     });
 
     request.body.energies.map((room: any) => {
@@ -101,6 +106,30 @@ export default class DevicesController extends Controller {
       where: {
         id: request.params.id,
       },
+      include: [
+        {
+          model: Room,
+          required: true,
+          as: "room",
+          include: [
+            {
+              model: Entity,
+              required: true,
+              as: "entity",
+              where: {
+                user_id: request.user.id,
+              },
+              include: [
+                {
+                  model: User,
+                  as: "user",
+                  required: true,
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
 
     if (!device) return this.failed(response, "Device not found");
@@ -109,10 +138,18 @@ export default class DevicesController extends Controller {
 
     if (error) return this.failed(response, error.message, error.details);
 
+    const statusChanged =
+      request.body.status == DeviceStatus.ON &&
+      device.status == DeviceStatus.OFF;
+
     await device.update({
       room_id: request.body.room.id,
       name: request.body.name,
       status: request.body.status,
+      notified: statusChanged ? false : device.notified,
+      last_time_on: statusChanged
+        ? moment(moment.now()).format("YYYY-MM-DD HH:mm")
+        : device.last_time_on,
     });
 
     const updatedRecords = request.body.energies
@@ -148,6 +185,13 @@ export default class DevicesController extends Controller {
         });
       }
     });
+
+    this.app.io.in(device.room.entity.user.email).emit("dashboard_changed");
+
+    this.app.io.in(device.room.entity.user.email).emit("notification", {
+      title: `Device ${device.name}`,
+      description: "Has been updated ",
+    } as INotification);
 
     this.success(response, "Device has been updated successfully");
   };
@@ -232,6 +276,8 @@ export default class DevicesController extends Controller {
       room_id: request.body.room.id,
       name: request.body.name,
       status: request.body.status,
+      notified: false,
+      last_time_on: moment(moment.now()).format("YYYY-MM-DD HH:mm"),
     });
 
     request.body.energies.map((room: any) => {
@@ -243,6 +289,11 @@ export default class DevicesController extends Controller {
     });
 
     this.app.io.in(request.user.email).emit("dashboard_changed");
+
+    this.app.io.in(request.user.email).emit("notification", {
+      title: `Device ${device.name}`,
+      description: "Has been updated ",
+    } as INotification);
 
     this.success(response, "Device has been added successfully");
   };
@@ -284,10 +335,18 @@ export default class DevicesController extends Controller {
 
     if (error) return this.failed(response, error.message, error.details);
 
+    const statusChanged =
+      request.body.status == DeviceStatus.ON &&
+      device.status == DeviceStatus.OFF;
+
     await device.update({
       room_id: request.body.room.id,
       name: request.body.name,
       status: request.body.status,
+      notified: statusChanged ? false : device.notified,
+      last_time_on: statusChanged
+        ? moment(moment.now()).format("YYYY-MM-DD HH:mm")
+        : device.last_time_on,
     });
 
     const updatedRecords = request.body.energies
@@ -325,6 +384,11 @@ export default class DevicesController extends Controller {
     });
 
     this.app.io.in(device.room.entity.user.email).emit("dashboard_changed");
+
+    this.app.io.in(device.room.entity.user.email).emit("notification", {
+      title: `Device ${device.name}`,
+      description: "Has been updated ",
+    } as INotification);
 
     this.success(response, "Device has been updated successfully");
   };

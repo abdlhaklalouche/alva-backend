@@ -69,12 +69,14 @@ class App implements IApplication {
   private registerCronJobs() {
     const jobs: IJob[] = [new EnergyConsumptionJob()];
 
-    jobs.map((job) => job.schedule(this));
+    jobs.map(async (job) => {
+      job.schedule(this);
+    });
   }
 
   private listenToSocket() {
     this.io.on("connection", (socket) => {
-      const authorization = socket.handshake.query.token as string;
+      const authorization = socket.handshake.headers.token as string;
 
       if (!authorization) {
         socket.disconnect(true);
