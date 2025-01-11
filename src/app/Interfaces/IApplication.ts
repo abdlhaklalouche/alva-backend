@@ -1,6 +1,6 @@
 import { Application } from "express";
 import http from "http";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 
 export default interface IApplication {
   server: http.Server;

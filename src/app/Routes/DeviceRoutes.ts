@@ -10,12 +10,15 @@ export default class DeviceRoutes implements IRoutes {
   public app: IApplication;
 
   private controller: DevicesController;
-  private auth: AuthMiddleware = new AuthMiddleware();
-  private sysAdmin: SysAdminMiddleware = new SysAdminMiddleware();
+  private auth: AuthMiddleware;
+  private sysAdmin: SysAdminMiddleware;
 
   constructor(app: IApplication) {
     this.app = app;
     this.router = express.Router();
+
+    this.auth = new AuthMiddleware(app);
+    this.sysAdmin = new SysAdminMiddleware(app);
 
     this.controller = new DevicesController(app);
 

@@ -1,11 +1,13 @@
 import { Model, DataTypes } from "sequelize";
 import database from "../Config/Database";
+import Room from "./Room";
 
 class Device extends Model {
   public id!: number;
   public name!: string;
   public status!: string;
   public room_id!: number;
+  public room!: Room;
 }
 
 Device.init(

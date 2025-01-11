@@ -263,6 +263,13 @@ export default class DevicesController extends Controller {
               where: {
                 user_id: request.user.id,
               },
+              include: [
+                {
+                  model: User,
+                  as: "user",
+                  required: true,
+                },
+              ],
             },
           ],
         },
@@ -314,6 +321,10 @@ export default class DevicesController extends Controller {
         });
       }
     });
+
+    console.log(device.room.entity.user.email);
+
+    this.app.io.in(device.room.entity.user.email).emit("dashboard_changed");
 
     this.success(response, "Device has been updated successfully");
   };

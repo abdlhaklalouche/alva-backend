@@ -1,11 +1,15 @@
 import { Model, DataTypes } from "sequelize";
 import database from "../Config/Database";
+import EntityType from "./EntityType";
+import User from "./User";
 
 class Entity extends Model {
   public id!: number;
   public name!: string;
   public user_id!: number;
   public type_id!: number;
+  public type!: EntityType;
+  public user!: User;
 }
 
 Entity.init(

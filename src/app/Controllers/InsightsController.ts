@@ -78,14 +78,17 @@ export default class InsightsController extends Controller {
         {
           model: Device,
           as: "device",
+          required: true,
           include: [
             {
               model: Room,
               as: "room",
+              required: true,
               include: [
                 {
                   model: Entity,
                   as: "entity",
+                  required: true,
                   where: {
                     user_id: request.user.id,
                   },
@@ -162,16 +165,19 @@ export default class InsightsController extends Controller {
         {
           model: Device,
           as: "device",
+          required: true,
           attributes: ["name"],
           include: [
             {
               model: Room,
               as: "room",
+              required: true,
               attributes: [],
               include: [
                 {
                   model: Entity,
                   as: "entity",
+                  required: true,
                   attributes: [],
                   where: {
                     user_id: request.user.id,

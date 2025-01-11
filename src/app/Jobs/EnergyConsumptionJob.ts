@@ -6,6 +6,6 @@ export default class EnergyConsumptionJob implements IJob {
   handle(app: IApplication): void {}
 
   schedule(app: IApplication): void {
-    cron.schedule("*/5 * * * * *", () => this.handle(app));
+    cron.schedule("*/10 * * * * *", () => this.handle(app));
   }
 }

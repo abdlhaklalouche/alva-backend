@@ -1,9 +1,10 @@
 import express, { Application } from "express";
 import * as bodyParser from "body-parser";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 import dontenv from "dotenv";
 import http from "http";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import routes from "./Routes";
 import database from "./Config/Database";
 import IApplication from "./Interfaces/IApplication";
@@ -73,9 +74,31 @@ class App implements IApplication {
 
   private listenToSocket() {
     this.io.on("connection", (socket) => {
-      socket.on("message", (data) => {});
+      const authorization = socket.handshake.query.token as string;
 
-      socket.on("disconnect", () => {});
+      if (!authorization) {
+        socket.disconnect(true);
+        return;
+      }
+
+      const token = authorization.replace("Bearer ", "");
+
+      jwt.verify(
+        token,
+        process.env.JWT_ACCESS_TOKEN_SECRET as string,
+        async (err: any, data: any) => {
+          if (err) {
+            socket.disconnect(true);
+            return;
+          }
+
+          socket.join(data.email);
+        }
+      );
+
+      socket.on("disconnect", (socket) => {
+        console.log(`Socket connection disconnected`);
+      });
     });
   }
 

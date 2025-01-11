@@ -3,8 +3,16 @@ import IResponse from "../Interfaces/IResponse";
 import { NextFunction } from "express";
 import Middleware from "./Middleware";
 import jwt from "jsonwebtoken";
+import IApplication from "../Interfaces/IApplication";
 
 export default class GuestMiddleware extends Middleware {
+  public app: IApplication;
+
+  constructor(app: IApplication) {
+    super();
+    this.app = app;
+  }
+
   execute(request: IRequest, response: IResponse, next: NextFunction): void {
     const authorization = request.headers.authorization;
 

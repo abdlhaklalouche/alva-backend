@@ -11,13 +11,17 @@ export default class UserRoutes implements IRoutes {
   public app: IApplication;
 
   private controller: UsersController;
-  private auth: AuthMiddleware = new AuthMiddleware();
-  private guest: GuestMiddleware = new GuestMiddleware();
-  private sysAdmin: SysAdminMiddleware = new SysAdminMiddleware();
+  private auth: AuthMiddleware;
+  private guest: GuestMiddleware;
+  private sysAdmin: SysAdminMiddleware;
 
   constructor(app: IApplication) {
     this.app = app;
     this.router = express.Router();
+
+    this.auth = new AuthMiddleware(app);
+    this.guest = new GuestMiddleware(app);
+    this.sysAdmin = new SysAdminMiddleware(app);
 
     this.controller = new UsersController(this.app);
 

@@ -9,11 +9,13 @@ export default class InsightsRoutes implements IRoutes {
   public app: IApplication;
 
   private controller: InsightsController;
-  private auth: AuthMiddleware = new AuthMiddleware();
+  private auth: AuthMiddleware;
 
   constructor(app: IApplication) {
     this.app = app;
     this.router = express.Router();
+
+    this.auth = new AuthMiddleware(app);
 
     this.controller = new InsightsController(app);
 

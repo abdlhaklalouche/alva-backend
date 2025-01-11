@@ -1,10 +1,12 @@
 import { Model, DataTypes } from "sequelize";
 import database from "../Config/Database";
+import Entity from "./Entity";
 
 class Room extends Model {
   public id!: number;
   public name!: string;
   public entity_id!: number;
+  public entity!: Entity;
 }
 
 Room.init(

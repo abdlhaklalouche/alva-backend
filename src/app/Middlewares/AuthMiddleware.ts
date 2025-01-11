@@ -4,8 +4,16 @@ import { NextFunction } from "express";
 import Middleware from "./Middleware";
 import jwt from "jsonwebtoken";
 import { User } from "../Models";
+import IApplication from "../Interfaces/IApplication";
 
 export default class AuthMiddleware extends Middleware {
+  public app: IApplication;
+
+  constructor(app: IApplication) {
+    super();
+    this.app = app;
+  }
+
   execute(request: IRequest, response: IResponse, next: NextFunction): void {
     const authorization = request.header("Authorization");
 

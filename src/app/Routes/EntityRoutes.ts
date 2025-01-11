@@ -12,12 +12,15 @@ export default class EntityRoutes implements IRoutes {
 
   private controller: EntitiesController;
   private typesController: EntityTypesController;
-  private auth: AuthMiddleware = new AuthMiddleware();
-  private sysAdmin: SysAdminMiddleware = new SysAdminMiddleware();
+  private auth: AuthMiddleware;
+  private sysAdmin: SysAdminMiddleware;
 
   constructor(app: IApplication) {
     this.app = app;
     this.router = express.Router();
+
+    this.auth = new AuthMiddleware(app);
+    this.sysAdmin = new SysAdminMiddleware(app);
 
     this.controller = new EntitiesController(app);
     this.typesController = new EntityTypesController(app);
