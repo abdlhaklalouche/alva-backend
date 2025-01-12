@@ -10,6 +10,7 @@ import database from "./Config/Database";
 import IApplication from "./Interfaces/IApplication";
 import IJob from "./Interfaces/IJob";
 import EnergyConsumptionJob from "./Jobs/EnergyConsumptionJob";
+import TrainModelsJob from "./Jobs/TrainModelsJob";
 
 class App implements IApplication {
   public server: http.Server;
@@ -67,7 +68,7 @@ class App implements IApplication {
   }
 
   private registerCronJobs() {
-    const jobs: IJob[] = [new EnergyConsumptionJob()];
+    const jobs: IJob[] = [new EnergyConsumptionJob(), new TrainModelsJob()];
 
     jobs.map(async (job) => {
       job.schedule(this);

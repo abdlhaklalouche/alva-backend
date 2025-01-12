@@ -5,6 +5,9 @@ export const getRandomBlackShade = () => {
   return `rgb(${randomShade}, ${randomShade}, ${randomShade})`;
 };
 
+export const normalize = (data: number[], min: number, max: number) =>
+  data.map((value) => (value - min) / (max - min));
+
 export const getDateRange = (
   period: FilterPeriod
 ): { startDate: Date; endDate: Date } => {
